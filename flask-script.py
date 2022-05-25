@@ -1,5 +1,5 @@
 from distutils.log import debug
-from flask import abort, Flask, jsonify, request
+from flask import abort, Flask, jsonify, request, Response, json
 from flask import render_template, render_template_string, redirect
 import logging.config
 import logging
@@ -48,44 +48,46 @@ log.addHandler(fileHandler)
 
 log.setLevel(logging.DEBUG)
 
-data= pd.read_csv(r"dataset_csv.csv")
+data= pd.read_csv(r"C:\workspace-pt\microservicio-clasificacion-flask\dataset_csv.csv")
 
 X = numpy.array(data[['age', 'Sex', 'Heart rate']])
 y = numpy.array(data['Class code'])
 
 scaler.fit_transform(X)
 
-mt = joblib.load(r"filename.cls")
+mt = joblib.load(r"C:\workspace-pt\microservicio-clasificacion-flask\filename.cls")
 
 # METODO QUE LLAMA AL SCRIPT
 @service.route('/', methods=['POST'])
 @cross_origin()
 def procesamiento_ecg():
     log.info('Procesamiento Iniciado')
-    log.info("JSON RECIBIDO")
-    log.info(request.form)
-    log.info(request.headers)
 
     request_data = request.get_json()
 
-
-    #fecha_nacimiento =request_data['edad']
-    #fecha_nacimiento = datetime.strptime(fecha_nacimiento, "%Y-%m-%d ")
-
-    #edad = timedelta(fecha_nacimiento) - today
-
-    sexo = request_data['sexo']
-    heart_rate = request_data['ritmo_cardiaco']
-    edad = request_data['edad']
+    sexo = int (request_data['sexo'])
+    heart_rate = int (request_data['ritmo_cardiaco'])
+    edad = int (request_data['edad'])
 
     x = [edad,sexo,heart_rate]
     arr = numpy.array(x)
     arr = arr[:,numpy.newaxis]
     arr = arr.reshape(1,-1)
     arr = scaler.transform(arr)
+    
     print(arr)
     
-    return str(mt.predict(arr))
+    data = {
+        'clasificacion': str(mt.predict(arr)[0])
+    }
+
+    js = json.dumps(data)
+
+    resp = Response(response=js,
+                    status=200,
+                    mimetype="application/json")
+
+    return resp
 
 
 if __name__ == '__main__':
