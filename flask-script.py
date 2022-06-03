@@ -48,14 +48,14 @@ log.addHandler(fileHandler)
 
 log.setLevel(logging.DEBUG)
 
-data= pd.read_csv(r"C:\workspace-pt\microservicio-clasificacion-flask\dataset_csv.csv")
+data= pd.read_csv(r'dataset_csv.csv')
 
 X = numpy.array(data[['age', 'Sex', 'Heart rate']])
 y = numpy.array(data['Class code'])
 
 scaler.fit_transform(X)
 
-mt = joblib.load(r"C:\workspace-pt\microservicio-clasificacion-flask\filename.cls")
+mt = joblib.load(r'filename.cls')
 
 # METODO QUE LLAMA AL SCRIPT
 @service.route('/', methods=['POST'])
