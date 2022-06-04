@@ -13,10 +13,10 @@ from flask_cors import CORS, cross_origin
 scaler = MinMaxScaler()
 
 # CONFIGURACIÓN DE VARIABLE PARA LA CREACIÓN DE SERVICIOS REST
-service = Flask(__name__)
-cors = CORS(service, resources={r"/*": {"origins": "*"}})
+app = Flask(__name__)
+cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
-service.config['CORS_HEADERS'] = 'Content-Type'
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 
 # CONFIGURACIÓN DE LOG PARA PINTAR EL FLUJO
@@ -47,7 +47,7 @@ scaler.fit_transform(X)
 mt = joblib.load(r'filename.cls')
 
 # METODO QUE LLAMA AL SCRIPT
-@service.route('/', methods=['POST'])
+@app.route('/', methods=['POST'])
 @cross_origin()
 def procesamiento_ecg():
     log.info('Procesamiento Iniciado')
@@ -80,4 +80,4 @@ def procesamiento_ecg():
 
 
 if __name__ == '__main__':
-    service.run(host="0.0.0.0", port=80, debug=True)
+    app.run(debug=True, port=80)
