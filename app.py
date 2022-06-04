@@ -1,6 +1,4 @@
-from distutils.log import debug
-from flask import abort, Flask, jsonify, request, Response, json
-from flask import render_template, render_template_string, redirect
+from flask import Flask, request, Response, json
 import logging.config
 import logging
 from concurrent_log_handler import ConcurrentRotatingFileHandler
@@ -11,15 +9,6 @@ import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 
 from flask_cors import CORS, cross_origin
-
-from datetime import datetime,timedelta
-
-#today = datetime.now()
-#print(today)
-
-
-#fecha = datetime.strptime("2022-05-06", "%Y-%m-%d ")
-#print (fecha)
 
 scaler = MinMaxScaler()
 
@@ -91,4 +80,4 @@ def procesamiento_ecg():
 
 
 if __name__ == '__main__':
-    service.run(host="0.0.0.0", port=8090, debug=True)
+    service.run(host="0.0.0.0", port=80, debug=True)
